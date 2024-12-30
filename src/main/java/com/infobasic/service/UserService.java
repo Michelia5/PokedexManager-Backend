@@ -29,4 +29,13 @@ public class UserService {
         }
         return false;
     }
+
+    public User getUserByUsername(String username) throws SQLException {
+        return userDAO.getUserByUsername(username);
+    }
+
+    public User getUserByEmail(String email) throws SQLException {
+        return userDAO.getUserByEmail(email);
+    }
+
 }

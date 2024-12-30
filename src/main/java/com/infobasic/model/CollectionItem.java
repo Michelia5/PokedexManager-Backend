@@ -7,9 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class CollectionItem {
     private int id;
-    private String username;
-    private String password;
-    private String email;
+    private int userId;
+    private int pokemonId;
+    private String status;
 }
+

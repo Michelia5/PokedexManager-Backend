@@ -3,6 +3,7 @@ package com.infobasic.controller;
 import com.infobasic.model.User;
 import com.infobasic.service.UserService;
 import io.javalin.Javalin;
+import com.infobasic.util.JWTUtil;
 
 import java.sql.SQLException;
 
@@ -18,6 +19,19 @@ public class UserController {
         app.post("/register", ctx -> {
             try {
                 User user = ctx.bodyAsClass(User.class);
+
+                // Controlla se l'username esiste già
+                if (userService.getUserByUsername(user.getUsername()) != null) {
+                    ctx.status(409).result("Username già in uso");
+                    return;
+                }
+
+                // Controlla se l'email esiste già
+                if (userService.getUserByEmail(user.getEmail()) != null) {
+                    ctx.status(409).result("Email già registrata");
+                    return;
+                }
+
                 boolean success = userService.createUser(user);
 
                 if (success) {
@@ -32,6 +46,8 @@ public class UserController {
             }
         });
 
+
+
         // Endpoint per l'autenticazione
         app.post("/login", ctx -> {
             try {
@@ -39,7 +55,8 @@ public class UserController {
                 boolean isAuthenticated = userService.authenticateUser(user.getUsername(), user.getPassword());
 
                 if (isAuthenticated) {
-                    ctx.status(200).result("Login effettuato con successo");
+                    String token = JWTUtil.generateToken(user.getUsername()); // Usa JWTUtil per generare il token
+                    ctx.json(token); // Restituisce il token al client
                 } else {
                     ctx.status(401).result("Credenziali non valide");
                 }
