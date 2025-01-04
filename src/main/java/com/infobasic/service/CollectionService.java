@@ -33,7 +33,6 @@ public class CollectionService {
         if (!"owned".equals(newStatus) && !"wishlist".equals(newStatus)) {
             return false;
         }
-        // Mando la richiesta al DAO
         return collectionDAO.updateStatus(userId, pokemonId, newStatus);
     }
 

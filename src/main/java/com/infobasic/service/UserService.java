@@ -37,5 +37,4 @@ public class UserService {
     public User getUserByEmail(String email) throws SQLException {
         return userDAO.getUserByEmail(email);
     }
-
 }

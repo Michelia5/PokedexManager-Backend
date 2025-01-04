@@ -65,12 +65,6 @@ public class UserController {
                     Map<String, Object> response = new HashMap<>();
                     response.put("user", fullUser);
                     response.put("token", token);
-
-                    // Restituisce un JSON del tipo:
-                    // {
-                    //   "user": { "id": 2, "username": "Michele", "email": "..." },
-                    //   "token": "eyJhbGciOiJIUzI1Ni..."
-                    // }
                     ctx.json(response);
                 } else {
                     ctx.status(401).result("Credenziali non valide");

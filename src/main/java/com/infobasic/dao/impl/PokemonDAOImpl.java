@@ -43,9 +43,6 @@ public class PokemonDAOImpl implements PokemonDAO {
         return null;
     }
 
-    /**
-     * Metodo di utilità per mappare un ResultSet su un oggetto Pokemon.
-     */
     private Pokemon mapResultSetToPokemon(ResultSet rs) throws SQLException {
         Pokemon p = new Pokemon();
         p.setNationalNumber(rs.getObject("national_number") == null ? null : rs.getInt("national_number"));
@@ -116,7 +113,6 @@ public class PokemonDAOImpl implements PokemonDAO {
                 Integer.parseInt(query); // Se è un numero
                 sql.append(" OR national_number = ?");
             } catch (NumberFormatException ignored) {
-                // Query non è un numero
             }
             sql.append(")");
         }
@@ -160,7 +156,4 @@ public class PokemonDAOImpl implements PokemonDAO {
 
         return paramIndex;
     }
-
-
-
 }

@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class CollectionDAOImpl implements CollectionDAO {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     CollectionItem item = new CollectionItem();
-                    // compila i campi di CollectionItem
+                    // campi di CollectionItem
                     item.setId(rs.getInt("id"));
                     item.setUserId(rs.getInt("userId"));
                     item.setPokemonId(rs.getInt("pokemonId"));
@@ -104,7 +103,7 @@ public class CollectionDAOImpl implements CollectionDAO {
             stmt.setInt(3, pokemonId);
 
             int rows = stmt.executeUpdate();
-            return rows > 0; // true se almeno una riga è stata aggiornata
+            return rows > 0;
         }
     }
 }

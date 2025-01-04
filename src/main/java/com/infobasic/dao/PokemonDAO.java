@@ -7,6 +7,5 @@ import java.util.List;
 public interface PokemonDAO {
     List<Pokemon> getAllPokemon() throws SQLException;
     Pokemon getPokemonByNationalNumber(int number) throws SQLException;
-
     List<Pokemon> searchAndFilterPokemon(String query, String primaryType, String secondaryType, String gen) throws SQLException;
 }

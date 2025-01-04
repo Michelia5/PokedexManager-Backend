@@ -6,7 +6,6 @@ import io.javalin.Javalin;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public class CollectionController {
 
