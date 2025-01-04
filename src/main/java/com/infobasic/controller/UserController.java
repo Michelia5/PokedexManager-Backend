@@ -2,10 +2,12 @@ package com.infobasic.controller;
 
 import com.infobasic.model.User;
 import com.infobasic.service.UserService;
-import io.javalin.Javalin;
 import com.infobasic.util.JWTUtil;
+import io.javalin.Javalin;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserController {
     private final UserService userService;
@@ -46,17 +48,30 @@ public class UserController {
             }
         });
 
-
-
         // Endpoint per l'autenticazione
         app.post("/login", ctx -> {
             try {
-                User user = ctx.bodyAsClass(User.class);
-                boolean isAuthenticated = userService.authenticateUser(user.getUsername(), user.getPassword());
+                User userReq = ctx.bodyAsClass(User.class);
+                boolean isAuthenticated = userService.authenticateUser(userReq.getUsername(), userReq.getPassword());
 
                 if (isAuthenticated) {
-                    String token = JWTUtil.generateToken(user.getUsername()); // Usa JWTUtil per generare il token
-                    ctx.json(token); // Restituisce il token al client
+                    // Recupera l'oggetto utente completo dal DB
+                    User fullUser = userService.getUserByUsername(userReq.getUsername());
+
+                    // Genera il token JWT
+                    String token = JWTUtil.generateToken(fullUser.getUsername());
+
+                    // Compone la risposta JSON con user + token
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("user", fullUser);
+                    response.put("token", token);
+
+                    // Restituisce un JSON del tipo:
+                    // {
+                    //   "user": { "id": 2, "username": "Michele", "email": "..." },
+                    //   "token": "eyJhbGciOiJIUzI1Ni..."
+                    // }
+                    ctx.json(response);
                 } else {
                     ctx.status(401).result("Credenziali non valide");
                 }

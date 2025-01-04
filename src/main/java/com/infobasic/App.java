@@ -24,6 +24,8 @@ public class App {
         app.before(ctx -> {
             if (ctx.path().startsWith("/collections")) {
                 String authHeader = ctx.header("Authorization");
+                String status = ctx.queryParam("status");
+
                 if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                     ctx.status(401).result("Token non presente o non valido");
                     return;
@@ -47,6 +49,8 @@ public class App {
             }
         });
 
+
+
         // Registrazione delle rotte
         PokemonController pokemonController = new PokemonController();
         pokemonController.registerRoutes(app);
@@ -54,7 +58,8 @@ public class App {
         UserController userController = new UserController();
         userController.registerRoutes(app);
 
-        CollectionController collectionController = new CollectionController(app);
+        // Registra le rotte per CollectionController direttamente
+        new CollectionController(app);
 
     }
 }

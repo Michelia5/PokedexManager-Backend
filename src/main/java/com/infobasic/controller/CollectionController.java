@@ -6,17 +6,22 @@ import io.javalin.Javalin;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class CollectionController {
 
     private final CollectionService collectionService;
+
+    public static class UpdateStatusRequest {
+        public int pokemonId;
+        public String newStatus;
+    }
 
     public CollectionController(Javalin app) {
         this.collectionService = new CollectionService();
 
         app.get("/collections", ctx -> {
             Integer userId = ctx.attribute("user_id");
-
             if (userId == null) {
                 ctx.status(401).result("Accesso non autorizzato.");
                 return;
@@ -33,8 +38,27 @@ public class CollectionController {
 
 
         app.post("/collections", ctx -> {
-            int userId = ctx.attribute("user_id");
-            CollectionItem item = ctx.bodyAsClass(CollectionItem.class);
+            Integer userId = ctx.attribute("user_id");
+
+            if (userId == null) {
+                ctx.status(401).result("Accesso non autorizzato.");
+                return;
+            }
+
+            String body = ctx.body(); // Legge il corpo come stringa
+            if (body == null || body.isBlank()) {
+                ctx.status(400).result("Il corpo della richiesta è vuoto.");
+                return;
+            }
+
+            CollectionItem item;
+            try {
+                item = ctx.bodyAsClass(CollectionItem.class);
+            } catch (Exception e) {
+                ctx.status(400).result("Formato JSON non valido.");
+                return;
+            }
+
             try {
                 boolean success = collectionService.addToCollection(userId, item.getPokemonId(), item.getStatus());
                 if (success) {
@@ -49,18 +73,43 @@ public class CollectionController {
 
 
         app.delete("/collections", ctx -> {
-            int userId = ctx.attribute("user_id"); // Recupera l'ID utente dal token JWT
+            Integer userId = ctx.attribute("user_id");
             int pokemonId = Integer.parseInt(ctx.queryParam("pokemon_id"));
+
             try {
                 boolean success = collectionService.removeFromCollection(userId, pokemonId);
                 if (success) {
                     ctx.status(200).result("Rimosso dalla collezione.");
                 } else {
-                    ctx.status(400).result("Errore durante la rimozione dalla collezione.");
+                    ctx.status(400).result("Errore durante la rimozione.");
                 }
             } catch (SQLException e) {
                 ctx.status(500).result("Errore SQL.");
             }
         });
+
+        app.put("/collections", ctx -> {
+            // Recupero l'ID utente dal contesto
+            Integer userId = ctx.attribute("user_id");
+            if (userId == null) {
+                ctx.status(401).result("Accesso non autorizzato.");
+                return;
+            }
+
+            UpdateStatusRequest req = ctx.bodyAsClass(UpdateStatusRequest.class);
+
+            try {
+                boolean success = collectionService.updateStatus(userId, req.pokemonId, req.newStatus);
+                if (success) {
+                    ctx.status(200).result("Status aggiornato con successo");
+                } else {
+                    ctx.status(400).result("Impossibile aggiornare lo status (elemento non trovato o status non valido).");
+                }
+            } catch (Exception e) {
+                ctx.status(500).result("Errore server: " + e.getMessage());
+            }
+        });
+
+
     }
 }

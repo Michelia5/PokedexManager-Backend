@@ -10,5 +10,5 @@ public interface CollectionDAO {
     boolean addToCollection(int userId, int pokemonId, String status) throws SQLException;
     boolean removeFromCollection(int userId, int pokemonId) throws SQLException;
     boolean isInCollection(int userId, int pokemonId) throws SQLException;
-
+    boolean updateStatus(int userId, int pokemonId, String newStatus)throws SQLException;
 }

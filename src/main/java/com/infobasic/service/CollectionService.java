@@ -19,17 +19,23 @@ public class CollectionService {
     }
 
     public boolean addToCollection(int userId, int pokemonId, String status) throws SQLException {
-        // Controlla se il Pokémon è già nella collezione
         if (collectionDAO.isInCollection(userId, pokemonId)) {
-            return false; // Già presente nella collezione
+            return false;
         }
-
-        // Se non è presente, aggiungilo
         return collectionDAO.addToCollection(userId, pokemonId, status);
     }
-
 
     public boolean removeFromCollection(int userId, int pokemonId) throws SQLException {
         return collectionDAO.removeFromCollection(userId, pokemonId);
     }
+
+    public boolean updateStatus(int userId, int pokemonId, String newStatus) throws SQLException {
+        if (!"owned".equals(newStatus) && !"wishlist".equals(newStatus)) {
+            return false;
+        }
+        // Mando la richiesta al DAO
+        return collectionDAO.updateStatus(userId, pokemonId, newStatus);
+    }
+
+
 }
