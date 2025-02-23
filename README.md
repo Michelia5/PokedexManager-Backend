@@ -32,12 +32,12 @@ cd PokedexManager-Backend
 ```bash
 mysql -u tuo_utente -p pokedex_v2 < "DB Dump/pokedex_v2.sql"
 ```
-### 3. Configura il File application.properties
-- **Modifica il file src/main/resources/application.properties con le credenziali corrette:
+### 3. Configura le Credenziali del Database
+- **Crea un file .env nella root del progetto e aggiungi le seguenti righe con le tue credenziali:
 ```bash
-spring.datasource.url=jdbc:mysql://localhost:3306/pokedex_v2
-spring.datasource.username=tuo_username
-spring.datasource.password=tuo_password
+DB_URL=jdbc:mysql://localhost:3306/pokedex_v2
+DB_USER=tuo_username
+DB_PASS=tuo_password
 ```
 
 ## **Avvio del Progetto**
